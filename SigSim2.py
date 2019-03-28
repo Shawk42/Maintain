@@ -20,7 +20,7 @@ vibrations is below
 """SIGNAL GENERATION"""
 #Following lines generate a matrix to form as a random signal for more advanced signals a function outputting a matrix should be used
 
-length = 100+1
+length = 20+1
 rsig = rand.randint(-10,10,length)
 t = np.linspace(0,length,length)
 
@@ -30,7 +30,10 @@ rsig = rsig*0.75
 """SIGNAL READING"""
 fact = "null"
 x = np.array([])
-
+filt = np.array([])
+factor = np.array([6/100,6/100,6/100,6/100,6/100,6/100])
+print(factor)
+print(factor.dtype)
 #Signal Interetation
 off = 0
 normal = 1
@@ -40,7 +43,19 @@ emergency = 4
 headers = np.array(["Off","Normal","Warning","Emergency"])
 
 for i in range(0,length):
-    sig = rsig.item(i)
+    #"""
+    if i <= 5:
+        filt = np.array([rsig.item(i-5),rsig.item(i-4),rsig.item(i-3),rsig.item(i-2),rsig.item(i-1),rsig.item(i)])
+        print(filt)
+        print(filt.dtype)
+        factor = factor.astype(float)
+        filt_factor = np.dot(filt,factor)
+        sig = filt_factor
+
+    else:
+        sig = rsig.item(i)
+    #"""
+    #sig = rsig.item(i)
     if sig == 0:
         #print("Off")
         fact = off
@@ -94,9 +109,9 @@ for i in range(0,np.size(state)):
         title = "Emergency"
         tit_mat = np.append(tit_mat, title)
 
-print(tit_mat)
-print(state)
-print(count)
+#print(tit_mat)
+#print(state)
+#print(count)
 
 
 
