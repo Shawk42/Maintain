@@ -47,9 +47,9 @@ intermed_time = timepack.time()
 #Signal Conditioning
 r_avg = np.average(r)
 r = r-r_avg
-r = abs(r)
 
-r[r < 0.001] = 0
+r[abs(r) < 0.005] = 0
+
 
 print("STATUS - Filtering Complete",round(timepack.time()-intermed_time,2),"Seconds required")
 intermed_time = timepack.time()
@@ -61,16 +61,9 @@ print("Data Points",np.size(time))
 
 
 
-plt.subplot(2,1,1)
 plt.plot(time,r)
-plt.title("Data")
 plt.grid()
-
-plt.subplot(2,1,2)
-plt.plot(time,r)
-
 plt.show()
-
 
 
 
