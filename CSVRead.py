@@ -48,7 +48,26 @@ intermed_time = timepack.time()
 r_avg = np.average(r)
 r = r-r_avg
 
-r[abs(r) < 0.005] = 0
+r[abs(r) < 0.005] = 0     #Blocks noise at no signal
+
+d_mat = np.array([])
+
+def filtfunc(d):
+    if d < 0.009:
+        return False
+    else:
+        return True
+
+r_filt = filter(filtfunc,r)
+
+for d in r_filt:
+    d_mat = np.append(d_mat,d)
+
+d_mat_length = np.size(d_mat)
+
+for i in range(0,d_mat_length):
+    value = d_mat.item(i)
+    while value != 
 
 
 print("STATUS - Filtering Complete",round(timepack.time()-intermed_time,2),"Seconds required")
@@ -60,11 +79,14 @@ print("Total Computation time",round(timepack.time()-start_time,2),"Seconds")
 print("Data Points",np.size(time))
 
 
-
+plt.subplot(2,1,1)
 plt.plot(time,r)
 plt.grid()
-plt.show()
 
+
+plt.subplot(2,1,2)
+plt.plot(d_mat)
+plt.show()
 
 
 
