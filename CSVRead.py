@@ -65,9 +65,15 @@ for d in r_filt:
 
 d_mat_length = np.size(d_mat)
 
+time_mat = np.array([])
+
 for i in range(0,d_mat_length):
     value = d_mat.item(i)
-    while value != 
+    if value != r.item(i):
+        "do nothing"
+    elif value == r.item(i):
+        print("I found a value")
+        time_mat = np.append(time_mat,time.item(i))
 
 
 print("STATUS - Filtering Complete",round(timepack.time()-intermed_time,2),"Seconds required")
