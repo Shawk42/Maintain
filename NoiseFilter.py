@@ -19,10 +19,11 @@ y_sig = np.delete(y_sig,50)
 y_sig = np.insert(y_sig,50,2)
 
 
-b,a = signal.butter(4,0.2,'low',analog= True)
-Y = signal.filtfilt(b,a,y_sig)
+b,a = signal.butter(4,0.5,'low',analog= True)
+#Y = signal.filtfilt(b,a,y_sig)
 
 
-#plt.plot(x,y_sig)
+plt.plot(x,y_sig)
 plt.plot(x,Y)
+plt.legend(("Orginal","Filtered"))
 plt.show()
