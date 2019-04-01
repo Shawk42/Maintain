@@ -4,11 +4,6 @@ import matplotlib.pyplot as plt
 import time as timepack
 from scipy import signal
 
-
-start_time = timepack.time()
-print("STATUS - Starting")
-
-
 """DATA IMPORATION"""
 data_1 = genfromtxt('AfternoonControl.csv',delimiter=',')
 time_1 = data_1[:,0]
@@ -16,8 +11,6 @@ x_1 = data_1[:,1]
 y_1 = data_1[:,2]
 z_1 = data_1[:,3]
 time_1_max = np.max(time_1)
-
-
 
 data_2 = genfromtxt('MondayTest.csv',delimiter=',')
 time_2 = data_2[:,0]
@@ -32,69 +25,59 @@ x = np.append(x_1,x_2)
 y = np.append(y_1,y_2)
 z = np.append(z_1,z_2)
 
+#Sensor Calibration
+x = -3.441+(7.026*x)
+y = -3.072+(6.215*y)
+z = -9.032+(15.963*z)
 
-intermed_time = timepack.time()
-print("STATUS - Data import successfull",round(intermed_time-start_time,2),"Seconds required")
-
-
-"""RESULTANT VECTOR"""
+"""RAW DATA"""
 r = (x**2+y**2+z**2)**0.5
-
-
-print("STATUS - Resultant vector found",round(timepack.time()-intermed_time,2),"Seconds required")
-intermed_time = timepack.time()
+r_prime = np.gradient(r)
 
 #Signal Conditioning
-r_avg = np.average(r)
-r = r-r_avg
-
-r[abs(r) < 0.005] = 0     #Blocks noise at no signal
-
-d_mat = np.array([])
-
-def filtfunc(d):
-    if d < 0.009:
-        return False
-    else:
-        return True
-
-r_filt = filter(filtfunc,r)
-
-for d in r_filt:
-    d_mat = np.append(d_mat,d)
-
-d_mat_length = np.size(d_mat)
-
-time_mat = np.array([])
-
-for i in range(0,d_mat_length):
-    value = d_mat.item(i)
-    if value != r.item(i):
-        "do nothing"
-    elif value == r.item(i):
-        print("I found a value")
-        time_mat = np.append(time_mat,time.item(i))
 
 
-print("STATUS - Filtering Complete",round(timepack.time()-intermed_time,2),"Seconds required")
-intermed_time = timepack.time()
+R = r+r_prime
 
 
-print("STATUS - Outputs")
-print("Total Computation time",round(timepack.time()-start_time,2),"Seconds")
-print("Data Points",np.size(time))
 
+"""
+error = 1-r
+error[abs(error) < 0.025] = 0     #Blocks noise at no signal
+r = error+1
+"""
+"""
+error = 1-r
+error[abs(error) < 0.025] = 0
+r = r+error
 
-plt.subplot(2,1,1)
+r_prime = np.gradient(r)
+
+error_prime = 1-r_prime
+error_prime[abs(error_prime) < 0.01] = 0
+r_prime = r_prime+error_prime
+"""
+
+#Graphing
+
+plt.subplot(3,1,1)
 plt.plot(time,r)
+plt.title("Resultant gravity vector magnitude")
+plt.ylabel("G")
+plt.grid()
+
+plt.subplot(3,1,2)
+plt.plot(time,r_prime)
+plt.title("r_prime")
+plt.grid()
+
+plt.subplot(3,1,3)
+plt.plot(time,R)
+plt.title("R score")
 plt.grid()
 
 
-plt.subplot(2,1,2)
-plt.plot(d_mat)
 plt.show()
-
-
 
 
 
